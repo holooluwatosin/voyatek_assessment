@@ -10,7 +10,7 @@ const page = () => {
       <div className='pt-[100px] w-[100%] flex justify-center items-center'>
         <div className='w-[92%] '>
           <Sidebar />
-          <div className='ml-6 pl-[300px]'>
+          <div className='ml-6 md:pl-[300px]'>
             <Users />
           </div>
         </div>

@@ -16,6 +16,7 @@ const Users = () => {
     const [fullName, setFullName] = useState();
     const [role, setRole] = useState();
     const [password, setPassword] = useState();
+    const [errorMessage, setErrorMessage] = useState();
 
     const user = { email, fullName, role, password };
 
@@ -39,7 +40,8 @@ const Users = () => {
           setAddUser(false);
           return response.data;
         } catch (error) {
-          console.error('Error adding user:', error);
+          console.error('Error adding user:', error.message);
+          setErrorMessage(error.message);
           throw error;
         }
     };
@@ -112,18 +114,18 @@ const Users = () => {
                     ))}
                 </div>
                 <div className='rounded-md bg-white min-h-[400px] w-full flex flex-col items-center'>
-                    <div className='py-3 w-[98%] flex justify-between items-center'>
+                    <div className='py-3 w-[98%] flex justify-between items-center overflow-x-auto'>
                         <div className='flex justify-normal'>
                             <div className='flex justify-start items-center h-[40px] md:w-[329px] ml-[10px] rounded-md px-3 border border-light-gray-2'>
                                 <MagnifyingGlass size={22} color='#94A3B8' />
                                 <input type="search" placeholder='Search here...' className='ml-3' />
                             </div>
-                            <button className='flex justify-start items-center h-[40px] ml-[10px] rounded-md px-3 border border-light-gray-2'>
+                            <button className='flex justify-start items-center h-[40px] mx-[10px] rounded-md px-3 border border-light-gray-2'>
                                 <FunnelSimple size={22} color='#94A3B8' className='mr-3' />
                                 Filter
                             </button>
                         </div>
-                        <button className='text-white bg-blue flex rounded-md justify-normal items-center h-[40px] px-2 mr-5' onClick={()=>{setAddUser(!addUser)}}>
+                        <button className='text-white whitespace-nowrap bg-blue flex rounded-md justify-normal items-center h-[40px] px-2 mr-5' onClick={()=>{setAddUser(!addUser)}}>
                             <PlusCircle size={22} color='#FFFFFF' className='mr-3' />
                             New User
                         </button>
@@ -181,6 +183,8 @@ const Users = () => {
 
                             <button type='submit' className='bg-blue text-white py-3 w-full rounded-md mb-[30px]'>Add User</button>
                         </form>
+
+                        <p className='text-red-700'>{errorMessage}</p>
                     </div>
                 </div>
             </Modal>

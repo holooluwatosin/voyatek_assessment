@@ -14,7 +14,8 @@ const Table = () => {
     const [deleteUser, setDeleteUser] = useState(false);
     const [userId, setUserId] = useState(null);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false)
-    const [confirmNewPass, setConfirmNewPass] = useState('')
+    const [confirmNewPass, setConfirmNewPass] = useState('');
+    const [errorMessage, setErrorMessage] = useState();
 
     const togglePassVisibility = () => {
         setConfirmPasswordVisible(prevVisibility => !prevVisibility)
@@ -59,13 +60,16 @@ const Table = () => {
     const dispatch = useDispatch();
     const getAllUsers = async () => {
         try {
+            setLoading(true);
           const response = await axios.get('/api/users');
         //   console.log('response', response.data)
           dispatch(getUsers(response.data))
         //   return response.data;
         } catch (error) {
-          console.error('Error adding user:', error);
+          console.error('Error getting user:', error.message);
           throw error;
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -116,6 +120,7 @@ const Table = () => {
           return response.data;
         } catch (error) {
           console.error('Error adding user:', error);
+          setErrorMessage(error.message)
           throw error;
         }
     };
@@ -231,6 +236,8 @@ const Table = () => {
 
                             <button className='bg-blue text-white py-3 w-full rounded-md mb-[30px]'>Update User</button>
                         </form>
+
+                        <p className='text-red-700'>{errorMessage}</p>
                     </div>
                 </div>
             </Modal>

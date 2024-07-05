@@ -19,7 +19,7 @@ const Sidebar = () => {
     ]
 
   return (
-    <div className='bg-white flex flex-col fixed w-[300px] h-[100%] rounded-md px-2'>
+    <div className='bg-white hidden md:flex flex-col fixed w-[300px] h-[100%] rounded-md px-2'>
         <div className='flex flex-col justify-between h-[85%]'>
             <div>
                 <p className='text-char font-bold text-[12px] py-4 px-5'>Settings</p>
