@@ -36,6 +36,7 @@ const Users = () => {
         try {
           const response = await axios.post('/api/users', user);
           dispatch(addNewUserDetails(response.data));
+          setAddUser(false);
           return response.data;
         } catch (error) {
           console.error('Error adding user:', error);

@@ -6,6 +6,7 @@ import { getAllUsers } from '@/endpoint/user';
 import { getUsers } from '@/slices/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from '../utils/axiosConfig'
+import Loader from "react-js-loader";
 
 const Table = () => {
     const [loading, setLoading] = useState(false);
@@ -17,10 +18,6 @@ const Table = () => {
 
     const togglePassVisibility = () => {
         setConfirmPasswordVisible(prevVisibility => !prevVisibility)
-    }
-
-    const handleSubmit = () => {
-        console.log('...')
     }
 
     const header = ['Name', 'Email Address', 'Role', 'Actions'];
@@ -95,6 +92,52 @@ const Table = () => {
         GetUsers()
     }, [])
 
+    const handleChange = (e) => {
+        const { name, value } = e.target
+        setDetails((prevState) => ({
+          ...prevState,
+          [name]: value,
+        }))
+      }
+
+    const initialstate = {
+        email: '', fullName: '', role: '', password: '',
+      }
+      const [details, setDetails] = useState(initialstate)
+
+      const user = { email: details.email, fullName: details.fullName, role: details.role };
+
+      const editUser = async () => {
+        try {
+          const response = await axios.put(`/api/users/${userId}`, user);
+        //   dispatch(addNewUserDetails(response.data));
+        GetUsers();
+        setUpdateUser(false);
+          return response.data;
+        } catch (error) {
+          console.error('Error adding user:', error);
+          throw error;
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        editUser(user)
+            .then(() => {
+                // Handle success, e.g., clear the form or show a success message
+                console.log('User added successfully');
+                setEmail('');
+                setFullName('');
+                setRole('');
+                setPassword('');
+            })
+            .catch((error) => {
+                // Handle error
+                console.error('Error adding user:', error);
+            });
+        console.log('submitted')
+    }
+
     return (
         <div className='w-full overflow-x-auto'>
             <table className='w-full divide-y divide-light-gray-2'>
@@ -130,7 +173,7 @@ const Table = () => {
                                 </div> 
                             </td>
                             <td className="py-4 pr-4 whitespace-nowrap">
-                                <span className='text-blue mr-2 cursor-pointer' onClick={(id)=>{setUpdateUser(!updateUser); setUserId(product.id)}}>Edit</span>
+                                <span className='text-blue mr-2 cursor-pointer' onClick={(id)=>{setUpdateUser(!updateUser); setUserId(product.id); setDetails(product)}}>Edit</span>
                                 <span className='text-light-gray-2 cursor-pointer' onClick={(id)=>{setDeleteUser(!deleteUser); setUserId(product.id)}}>Remove</span>
                             </td>
                         </tr>
@@ -143,20 +186,20 @@ const Table = () => {
                     <div className=' w-full flex flex-col justify-between items-center py-4'>
                         <div className='flex flex-col justify-between items-center'>
                             <img src="./images/avatar-2.png" alt="" />
-                            <p className='text-yankee-blue text-[24px] font-bold mb-[20px]'>New User</p>
+                            <p className='text-yankee-blue text-[24px] font-bold mb-[20px]'>Edit User</p>
                         </div>
                         <form onSubmit={handleSubmit} className='w-[90%]'>
                             <div className='mb-[30px]'>
                                 <p htmlFor="" className='text-independence text-[14px]'>Email Address</p>
-                                <input type="text" placeholder="New User's Email Address" className='border border-light-gray-2 rounded-md p-[15px] w-full'/>
+                                <input type="text" placeholder="New User's Email Address" className='border border-light-gray-2 rounded-md p-[15px] w-full' value={details.email} onChange={handleChange} id='email' name='email'/>
                             </div>
                             <div className='mb-[30px]'>
                                 <p htmlFor="" className='text-independence text-[14px]'>Full Name</p>
-                                <input type="text" placeholder="New User's Full Name" className='border border-light-gray-2 rounded-md p-[15px] w-full'/>
+                                <input type="text" placeholder="New User's Full Name" className='border border-light-gray-2 rounded-md p-[15px] w-full' value={details.fullName} onChange={handleChange} id='fullName' name='fullName'/>
                             </div>
                             <div className='mb-[30px]'>
                                 <p htmlFor="" className='text-independence text-[14px]'>Role</p>
-                                <select className='border border-light-gray-2 rounded-md p-[15px] w-full'>
+                                <select className='border border-light-gray-2 rounded-md p-[15px] w-full' value={details.role} onChange={handleChange} id='role' name='role'>
                                     <option value="" disabled selected>Select Role</option>
                                     <option value="Administrator">Administrator</option>
                                     <option value="Sales Manager">Sales Manager</option>
